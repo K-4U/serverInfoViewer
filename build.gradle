@@ -88,6 +88,9 @@ processResources
 }
 
 jar {
+    manifest {
+        attributes 'FMLAT': 'siv_at.cfg'
+    }
     classifier = "universal"
 }
 

@@ -4,9 +4,8 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import k4unl.minecraft.siv.client.gui.MainMenuHandler;
-import net.minecraft.client.gui.GuiMainMenu;
-import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraft.client.gui.GuiMultiplayer;
+import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
 
 public class EventHelper {
@@ -19,17 +18,9 @@ public class EventHelper {
 
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
-    public void onGuiInit(GuiScreenEvent.InitGuiEvent evt) {
-        if (evt.gui instanceof GuiMainMenu) {
-            MainMenuHandler.initGui(evt.gui, evt.buttonList);
-        }
-    }
-
-    @SideOnly(Side.CLIENT)
-    @SubscribeEvent
-    public void onActionPerformed(GuiScreenEvent.ActionPerformedEvent evt) {
-        if (evt.gui instanceof GuiMainMenu) {
-            MainMenuHandler.onActionPerformed(evt.button);
+    public void onGuiOpen(GuiOpenEvent evt) {
+        if(evt.gui instanceof GuiMultiplayer){
+            evt.gui = new k4unl.minecraft.siv.client.gui.GuiMultiplayer(evt.gui);
         }
     }
 }
