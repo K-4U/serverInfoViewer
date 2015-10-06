@@ -7,7 +7,7 @@ ServerInfoViewer is a small client only utility that uses ServerQueryExtender to
 
 
 ## Links ##
-Curse: []()
+Curse: [http://minecraft.curseforge.com/projects/serverinfoviewer](http://minecraft.curseforge.com/projects/serverinfoviewer)
 
 Required mods:
 
