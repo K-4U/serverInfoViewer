@@ -1,0 +1,15 @@
+[
+    {
+        "modid":        "SIV",
+        "name":         "ServerInfoViewer",
+        "description":  "Shows the time and weather on a remote server",
+        "version":      "${version}-${buildNum}",
+        "mcversion":    "$mcversion",
+        "url":          "https://github.com/K-4U/serverInfoViewer",
+        "updateUrl":    "https://github.com/K-4U/serverInfoViewer",
+        "authorList":   [
+            "K4Unl",
+        ]
+    }
+]       
+        
