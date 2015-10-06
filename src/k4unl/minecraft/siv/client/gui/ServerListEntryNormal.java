@@ -107,11 +107,6 @@ public class ServerListEntryNormal extends net.minecraft.client.gui.ServerListEn
                 Gui.func_146110_a(p_148279_2_ + p_148279_4_ - 28, p_148279_3_ + 22, 0.0F, 0.0F, 10, 10, 10.0F, 10.0F);
 
             }
-            //Gui.func_146110_a(p_148279_2_ + p_148279_4_ - 10, p_148279_3_ - p_148279_5_ - 16, 0.0F, 0.0F, 8, 8, 8.0F, 8.0F);
-
-            //textWidth = textWidth + this.field_148300_d.fontRenderer.getStringWidth(this.extendedServerData.getWeather()) + 3;
-            //TODO: Replace me with icons
-            //this.field_148300_d.fontRenderer.drawString(this.extendedServerData.getWeather(), p_148279_2_ + p_148279_4_ - textWidth - 6, p_148279_3_ + p_148279_5_ - this.field_148300_d.fontRenderer.FONT_HEIGHT, 16777215);
         }
 
         this.field_148300_d.fontRenderer.drawString(this.field_148301_e.serverName, p_148279_2_ + 32 + 3, p_148279_3_ + 1, 16777215);
