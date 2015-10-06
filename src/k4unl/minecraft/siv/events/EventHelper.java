@@ -20,7 +20,7 @@ public class EventHelper {
     @SubscribeEvent
     public void onGuiOpen(GuiOpenEvent evt) {
         if(evt.gui instanceof GuiMultiplayer){
-            evt.gui = new k4unl.minecraft.siv.client.gui.GuiMultiplayer(evt.gui);
+            evt.gui = new k4unl.minecraft.siv.client.gui.GuiMultiplayer(((GuiMultiplayer)evt.gui).field_146798_g);
         }
     }
 }
