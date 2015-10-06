@@ -1,7 +1,11 @@
 package k4unl.minecraft.siv.client.gui;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import cpw.mods.fml.client.FMLClientHandler;
-import k4unl.minecraft.k4lib.network.Query;
+import k4unl.minecraft.siv.client.IconSupplier;
+import k4unl.minecraft.siv.lib.ExtendedServerData;
+import k4unl.minecraft.siv.lib.Log;
+import k4unl.minecraft.siv.lib.QueryGetter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.multiplayer.ServerAddress;
@@ -12,11 +16,33 @@ import org.lwjgl.opengl.GL11;
 
 import java.net.UnknownHostException;
 import java.util.List;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @author Koen Beckers (K-4U)
  */
 public class ServerListEntryNormal extends net.minecraft.client.gui.ServerListEntryNormal {
+
+    public static final ThreadPoolExecutor threadPoolExecutor = new ScheduledThreadPoolExecutor(5, (new ThreadFactoryBuilder()).setNameFormat("Server Query Checker #%d").setDaemon(true).build());
+
+    private QueryGetter queryGetter;
+    public ExtendedServerData extendedServerData = new ExtendedServerData();
+
+    private Runnable serverQueryRequester = new Runnable() {
+        @Override
+        public void run() {
+            if(!extendedServerData.isHasData()) {
+                //Do query
+                ServerAddress serveraddress = ServerAddress.func_78860_a(ServerListEntryNormal.this.field_148301_e.serverIP);
+                queryGetter = new QueryGetter(serveraddress, extendedServerData);
+                Log.debug("Getting");
+                queryGetter.run();
+                Log.debug("Done with getting");
+                threadPoolExecutor.remove(this);
+            }
+        }
+    };
 
     protected ServerListEntryNormal(net.minecraft.client.gui.GuiMultiplayer p_i45048_1_, ServerData p_i45048_2_) {
         super(p_i45048_1_, p_i45048_2_);
@@ -38,10 +64,7 @@ public class ServerListEntryNormal extends net.minecraft.client.gui.ServerListEn
                     try
                     {
                         ServerListEntryNormal.this.field_148303_c.func_146789_i().func_147224_a(ServerListEntryNormal.this.field_148301_e);
-                        //Do query
-                        ServerAddress serveraddress = ServerAddress.func_78860_a(ServerListEntryNormal.this.field_148301_e.serverIP);
-                        Query query = new Query(serveraddress.getIP(), serveraddress.getPort());
-                        query.requestExtendedInfo();
+                        threadPoolExecutor.submit(serverQueryRequester);
                     }
                     catch (UnknownHostException unknownhostexception)
                     {
@@ -60,6 +83,37 @@ public class ServerListEntryNormal extends net.minecraft.client.gui.ServerListEn
         boolean flag1 = this.field_148301_e.field_82821_f > 5;
         boolean flag2 = this.field_148301_e.field_82821_f < 5;
         boolean flag3 = flag1 || flag2;
+
+        if(this.extendedServerData.isHasData()){
+            int textWidth = this.field_148300_d.fontRenderer.getStringWidth(this.extendedServerData.isDay() ? "Day":"Night");
+            //this.field_148300_d.fontRenderer.drawString(this.extendedServerData.isDay() ? "Day" : "Night", p_148279_2_ + p_148279_4_ - textWidth - 6, p_148279_3_ + p_148279_5_ - this.field_148300_d.fontRenderer.FONT_HEIGHT, 16777215);
+
+            if(this.extendedServerData.isDay()) {
+                this.field_148300_d.getTextureManager().bindTexture(IconSupplier.sun);
+            }else{
+                this.field_148300_d.getTextureManager().bindTexture(IconSupplier.moon);
+            }
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+            Gui.func_146110_a(p_148279_2_ + p_148279_4_ - 15, p_148279_3_ + 22, 0.0F, 0.0F, 10, 10, 10.0F, 10.0F);
+
+            if(this.extendedServerData.getWeather().equals("rain") || this.extendedServerData.getWeather().equals("thunder")){
+                if(this.extendedServerData.getWeather().equals("rain")) {
+                    this.field_148300_d.getTextureManager().bindTexture(IconSupplier.rain);
+                }else{
+                    this.field_148300_d.getTextureManager().bindTexture(IconSupplier.thunder);
+                }
+                Gui.func_146110_a(p_148279_2_ + p_148279_4_ - 28, p_148279_3_ + 22, 0.0F, 0.0F, 10, 10, 10.0F, 10.0F);
+
+            }
+            //Gui.func_146110_a(p_148279_2_ + p_148279_4_ - 10, p_148279_3_ - p_148279_5_ - 16, 0.0F, 0.0F, 8, 8, 8.0F, 8.0F);
+
+            //textWidth = textWidth + this.field_148300_d.fontRenderer.getStringWidth(this.extendedServerData.getWeather()) + 3;
+            //TODO: Replace me with icons
+            //this.field_148300_d.fontRenderer.drawString(this.extendedServerData.getWeather(), p_148279_2_ + p_148279_4_ - textWidth - 6, p_148279_3_ + p_148279_5_ - this.field_148300_d.fontRenderer.FONT_HEIGHT, 16777215);
+        }
+
         this.field_148300_d.fontRenderer.drawString(this.field_148301_e.serverName, p_148279_2_ + 32 + 3, p_148279_3_ + 1, 16777215);
         List list = this.field_148300_d.fontRenderer.listFormattedStringToWidth(FMLClientHandler.instance().fixDescription(this.field_148301_e.serverMOTD), p_148279_4_ - 48 - 2);
 
@@ -149,10 +203,14 @@ public class ServerListEntryNormal extends net.minecraft.client.gui.ServerListEn
             Gui.func_146110_a(p_148279_2_, p_148279_3_, 0.0F, 0.0F, 32, 32, 32.0F, 32.0F);
         }
 
-        int k2 = p_148279_7_ - p_148279_2_;
-        int l2 = p_148279_8_ - p_148279_3_;
 
-        String tooltip = FMLClientHandler.instance().enhanceServerListEntry(this, this.field_148301_e, p_148279_2_, p_148279_4_, p_148279_3_, k2, l2);
+
+
+        int k2 = p_148279_7_ - p_148279_2_;
+        int l2 = p_148279_8_ - (p_148279_3_-4);
+
+        String tooltip = FMLClientHandler.instance().enhanceServerListEntry(this, this.field_148301_e, p_148279_2_, p_148279_4_, p_148279_3_-4, k2, l2);
+        l2 = p_148279_8_ - p_148279_3_;
         if (tooltip != null)
         {
             this.field_148303_c.func_146793_a(tooltip);
