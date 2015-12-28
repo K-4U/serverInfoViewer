@@ -1,18 +1,17 @@
 package k4unl.minecraft.siv;
 
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import k4unl.minecraft.k4lib.lib.config.ConfigHandler;
 import k4unl.minecraft.siv.events.EventHelper;
 import k4unl.minecraft.siv.lib.Log;
 import k4unl.minecraft.siv.lib.config.ModInfo;
 import k4unl.minecraft.siv.lib.config.SIVConfig;
 import k4unl.minecraft.siv.proxy.CommonProxy;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(
         modid = ModInfo.ID,
@@ -30,17 +29,17 @@ public class ServerInfoViewer {
     public static CommonProxy proxy;
 
     private boolean canWork = true;
-    @Instance(value = ModInfo.ID)
+    @Mod.Instance(value = ModInfo.ID)
     public static ServerInfoViewer instance;
 
     private ConfigHandler SIVConfigHandler = new ConfigHandler();
 
-    @EventHandler
+    @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
 
         Log.init();
 
-        if (event.getSide().equals(cpw.mods.fml.relauncher.Side.CLIENT)) {
+        if (event.getSide().equals(Side.CLIENT)) {
             SIVConfig.INSTANCE.init();
             SIVConfigHandler.init(SIVConfig.INSTANCE, event.getSuggestedConfigurationFile());
         } else {
@@ -49,12 +48,12 @@ public class ServerInfoViewer {
         }
     }
 
-    @EventHandler
+    @Mod.EventHandler
     public void load(FMLInitializationEvent event) {
         EventHelper.init();
     }
 
-    @EventHandler
+    @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
 
     }

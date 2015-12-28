@@ -16,8 +16,8 @@ public class GuiMultiplayer extends net.minecraft.client.gui.GuiMultiplayer {
      */
     public void initGui() {
         super.initGui();
-        this.field_146803_h = new ServerSelectionList(this, this.mc, this.width, this.height, 32, this.height - 64, 36);
-        this.field_146803_h.func_148195_a(this.field_146804_i);
+        this.serverListSelector = new ServerSelectionList(this, this.mc, this.width, this.height, 32, this.height - 64, 36);
+        this.serverListSelector.func_148195_a(this.savedServerList);
     }
 
 }
