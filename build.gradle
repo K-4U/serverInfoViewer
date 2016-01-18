@@ -28,7 +28,7 @@ dependencies {
 
 project.ext {
     buildNum = System.getenv("BUILD_NUMBER")
-    mcVersion="1.8.8"
+    mcVersion="1.8.9"
 }
 
 version = project.ext.mcVersion + "-1.0." + project.ext.buildNum
@@ -38,14 +38,11 @@ archivesBaseName = "ServerInfoViewer"
 
 
 minecraft {
-    version = "${project.ext.mcVersion}-11.15.0.1641-${project.ext.mcVersion}"
-
-    runDir = "../minecraft/"
-
+    version = "${project.ext.mcVersion}-11.15.0.1705"
     replace "@VERSION@", project.version
-	replace "@BUILDNUM@", project.ext.buildNum
+    replace "@BUILDNUM@", project.ext.buildNum
 
-    mappings = "snapshot_20151228"
+    mappings = "snapshot_20160117"
 }
 
 // configure the source folders
