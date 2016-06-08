@@ -17,27 +17,26 @@ public class ServerSelectionList extends net.minecraft.client.gui.ServerSelectio
     /**
      * Gets the IGuiListEntry object for the given index
      */
-    public GuiListExtended.IGuiListEntry getListEntry(int index) {
-        if (index < this.field_148198_l.size()) {
-            return (GuiListExtended.IGuiListEntry) this.field_148198_l.get(index);
+    public IGuiListEntry getListEntry(int index) {
+        if (index < this.serverListInternet.size()) {
+            return (IGuiListEntry) this.serverListInternet.get(index);
         } else {
-            index = index - this.field_148198_l.size();
+            index = index - this.serverListInternet.size();
 
             if (index == 0) {
                 return this.lanScanEntry;
             } else {
                 --index;
-                return (GuiListExtended.IGuiListEntry) this.field_148199_m.get(index);
+                return (IGuiListEntry) this.serverListLan.get(index);
             }
         }
     }
 
-
-    public void func_148195_a(ServerList p_148195_1_) {
-        this.field_148198_l.clear();
+    public void updateOnlineServers(ServerList p_148195_1_) {
+        this.serverListInternet.clear();
 
         for (int i = 0; i < p_148195_1_.countServers(); ++i) {
-            this.field_148198_l.add(new ServerListEntryNormal(this.owner, p_148195_1_.getServerData(i)));
+            this.serverListInternet.add(new ServerListEntryNormal(this.owner, p_148195_1_.getServerData(i)));
         }
     }
 

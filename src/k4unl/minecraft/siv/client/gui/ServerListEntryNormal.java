@@ -10,7 +10,8 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.multiplayer.ServerAddress;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import org.lwjgl.opengl.GL11;
 
 import java.net.UnknownHostException;
@@ -33,7 +34,7 @@ public class ServerListEntryNormal extends net.minecraft.client.gui.ServerListEn
         public void run() {
             if (!extendedServerData.isHasData()) {
                 //Do query
-                ServerAddress serveraddress = ServerAddress.fromString(ServerListEntryNormal.this.field_148301_e.serverIP);
+                ServerAddress serveraddress = ServerAddress.fromString(ServerListEntryNormal.this.server.serverIP);
                 queryGetter = new QueryGetter(serveraddress, extendedServerData);
                 Log.debug("Getting");
                 queryGetter.run();
@@ -48,31 +49,31 @@ public class ServerListEntryNormal extends net.minecraft.client.gui.ServerListEn
     }
 
     public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected) {
-        if (!this.field_148301_e.field_78841_f) {
-            this.field_148301_e.field_78841_f = true;
-            this.field_148301_e.pingToServer = -2L;
-            this.field_148301_e.serverMOTD = "";
-            this.field_148301_e.populationInfo = "";
-            field_148302_b.submit(new Runnable() {
+        if (!this.server.pinged) {
+            this.server.pinged = true;
+            this.server.pingToServer = -2L;
+            this.server.serverMOTD = "";
+            this.server.populationInfo = "";
+            EXECUTOR.submit(new Runnable() {
                 public void run() {
                     try {
-                        ServerListEntryNormal.this.field_148303_c.getOldServerPinger().ping(ServerListEntryNormal.this.field_148301_e);
+                        ServerListEntryNormal.this.owner.getOldServerPinger().ping(ServerListEntryNormal.this.server);
                         threadPoolExecutor.submit(serverQueryRequester);
                     } catch (UnknownHostException unknownhostexception) {
-                        ServerListEntryNormal.this.field_148301_e.pingToServer = -1L;
-                        ServerListEntryNormal.this.field_148301_e.serverMOTD = EnumChatFormatting.DARK_RED + "Can\'t resolve hostname";
+                        ServerListEntryNormal.this.server.pingToServer = -1L;
+                        ServerListEntryNormal.this.server.serverMOTD = TextFormatting.DARK_RED + "Can\'t resolve hostname";
                     } catch (Exception exception) {
-                        ServerListEntryNormal.this.field_148301_e.pingToServer = -1L;
-                        ServerListEntryNormal.this.field_148301_e.serverMOTD = EnumChatFormatting.DARK_RED + "Can\'t connect to server.";
+                        ServerListEntryNormal.this.server.pingToServer = -1L;
+                        ServerListEntryNormal.this.server.serverMOTD = TextFormatting.DARK_RED + "Can\'t connect to server.";
                     }
                 }
             });
         }
-        boolean flag = this.field_148301_e.version > 47;
-        boolean flag1 = this.field_148301_e.version < 47;
+        boolean flag = this.server.version > 110;
+        boolean flag1 = this.server.version < 110;
         boolean flag2 = flag || flag1;
 
-
+        /** CUSTOM **/
         if(this.extendedServerData.isHasData()){
             int textWidth = this.mc.fontRendererObj.getStringWidth(this.extendedServerData.isDay() ? "Day":"Night");
             //this.field_148300_d.fontRenderer.drawString(this.extendedServerData.isDay() ? "Day" : "Night", p_148279_2_ + listWidth - textWidth - 6, y + slotHeight - this.field_148300_d.fontRenderer.FONT_HEIGHT, 16777215);
@@ -99,14 +100,14 @@ public class ServerListEntryNormal extends net.minecraft.client.gui.ServerListEn
         }
 
 
-        this.mc.fontRendererObj.drawString(this.field_148301_e.serverName, x + 32 + 3, y + 1, 16777215);
-        List<String> list = this.mc.fontRendererObj.listFormattedStringToWidth(net.minecraftforge.fml.client.FMLClientHandler.instance().fixDescription(this.field_148301_e.serverMOTD), listWidth - 48 - 2);
+        this.mc.fontRendererObj.drawString(this.server.serverName, x + 32 + 3, y + 1, 16777215);
+        List<String> list = this.mc.fontRendererObj.listFormattedStringToWidth(FMLClientHandler.instance().fixDescription(this.server.serverMOTD), listWidth - 48 - 2);
 
         for (int i = 0; i < Math.min(list.size(), 2); ++i) {
             this.mc.fontRendererObj.drawString((String) list.get(i), x + 32 + 3, y + 12 + this.mc.fontRendererObj.FONT_HEIGHT * i, 8421504);
         }
 
-        String s2 = flag2 ? EnumChatFormatting.DARK_RED + this.field_148301_e.gameVersion : this.field_148301_e.populationInfo;
+        String s2 = flag2 ? TextFormatting.DARK_RED + this.server.gameVersion : this.server.populationInfo;
         int j = this.mc.fontRendererObj.getStringWidth(s2);
         this.mc.fontRendererObj.drawString(s2, x + listWidth - j - 15 - 2, y + 1, 8421504);
         int k = 0;
@@ -117,27 +118,27 @@ public class ServerListEntryNormal extends net.minecraft.client.gui.ServerListEn
         if (flag2) {
             l = 5;
             s1 = flag ? "Client out of date!" : "Server out of date!";
-            s = this.field_148301_e.playerList;
-        } else if (this.field_148301_e.field_78841_f && this.field_148301_e.pingToServer != -2L) {
-            if (this.field_148301_e.pingToServer < 0L) {
+            s = this.server.playerList;
+        } else if (this.server.pinged && this.server.pingToServer != -2L) {
+            if (this.server.pingToServer < 0L) {
                 l = 5;
-            } else if (this.field_148301_e.pingToServer < 150L) {
+            } else if (this.server.pingToServer < 150L) {
                 l = 0;
-            } else if (this.field_148301_e.pingToServer < 300L) {
+            } else if (this.server.pingToServer < 300L) {
                 l = 1;
-            } else if (this.field_148301_e.pingToServer < 600L) {
+            } else if (this.server.pingToServer < 600L) {
                 l = 2;
-            } else if (this.field_148301_e.pingToServer < 1000L) {
+            } else if (this.server.pingToServer < 1000L) {
                 l = 3;
             } else {
                 l = 4;
             }
 
-            if (this.field_148301_e.pingToServer < 0L) {
+            if (this.server.pingToServer < 0L) {
                 s1 = "(no connection)";
             } else {
-                s1 = this.field_148301_e.pingToServer + "ms";
-                s = this.field_148301_e.playerList;
+                s1 = this.server.pingToServer + "ms";
+                s = this.server.playerList;
             }
         } else {
             k = 1;
@@ -151,31 +152,31 @@ public class ServerListEntryNormal extends net.minecraft.client.gui.ServerListEn
         }
 
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.getTextureManager().bindTexture(Gui.icons);
+        this.mc.getTextureManager().bindTexture(Gui.ICONS);
         Gui.drawModalRectWithCustomSizedTexture(x + listWidth - 15, y, (float) (k * 10), (float) (176 + l * 8), 10, 8, 256.0F, 256.0F);
 
-        if (this.field_148301_e.getBase64EncodedIconData() != null && !this.field_148301_e.getBase64EncodedIconData().equals(this.field_148299_g)) {
-            this.field_148299_g = this.field_148301_e.getBase64EncodedIconData();
+        if (this.server.getBase64EncodedIconData() != null && !this.server.getBase64EncodedIconData().equals(this.lastIconB64)) {
+            this.lastIconB64 = this.server.getBase64EncodedIconData();
             this.prepareServerIcon();
-            this.field_148303_c.getServerList().saveServerList();
+            this.owner.getServerList().saveServerList();
         }
 
-        if (this.field_148305_h != null) {
-            this.func_178012_a(x, y, this.field_148306_i);
+        if (this.icon != null) {
+            this.drawTextureAt(x, y, this.serverIcon);
         } else {
-            this.func_178012_a(x, y, UNKNOWN_SERVER);
+            this.drawTextureAt(x, y, UNKNOWN_SERVER);
         }
 
         int i1 = mouseX - x;
         int j1 = mouseY - (y - 4);
 
-        String tooltip = net.minecraftforge.fml.client.FMLClientHandler.instance().enhanceServerListEntry(this, this.field_148301_e, x, listWidth, y-4, i1, j1);
+        String tooltip = FMLClientHandler.instance().enhanceServerListEntry(this, this.server, x, listWidth, y-4, i1, j1);
         if (tooltip != null) {
-            this.field_148303_c.setHoveringText(tooltip);
+            this.owner.setHoveringText(tooltip);
         } else if (i1 >= listWidth - 15 && i1 <= listWidth - 5 && j1 >= 0 && j1 <= 8) {
-            this.field_148303_c.setHoveringText(s1);
+            this.owner.setHoveringText(s1);
         } else if (i1 >= listWidth - j - 15 - 2 && i1 <= listWidth - 15 - 2 && j1 >= 0 && j1 <= 8) {
-            this.field_148303_c.setHoveringText(s);
+            this.owner.setHoveringText(s);
         }
 
         if (this.mc.gameSettings.touchscreen || isSelected) {
@@ -185,7 +186,7 @@ public class ServerListEntryNormal extends net.minecraft.client.gui.ServerListEn
             int k1 = mouseX - x;
             int l1 = mouseY - y;
 
-            if (this.func_178013_b()) {
+            if (this.canJoin()) {
                 if (k1 < 32 && k1 > 16) {
                     Gui.drawModalRectWithCustomSizedTexture(x, y, 0.0F, 32.0F, 32, 32, 256.0F, 256.0F);
                 } else {
@@ -193,7 +194,7 @@ public class ServerListEntryNormal extends net.minecraft.client.gui.ServerListEn
                 }
             }
 
-            if (this.field_148303_c.func_175392_a(this, slotIndex)) {
+            if (this.owner.canMoveUp(this, slotIndex)) {
                 if (k1 < 16 && l1 < 16) {
                     Gui.drawModalRectWithCustomSizedTexture(x, y, 96.0F, 32.0F, 32, 32, 256.0F, 256.0F);
                 } else {
@@ -201,7 +202,7 @@ public class ServerListEntryNormal extends net.minecraft.client.gui.ServerListEn
                 }
             }
 
-            if (this.field_148303_c.func_175394_b(this, slotIndex)) {
+            if (this.owner.canMoveDown(this, slotIndex)) {
                 if (k1 < 16 && l1 > 16) {
                     Gui.drawModalRectWithCustomSizedTexture(x, y, 64.0F, 32.0F, 32, 32, 256.0F, 256.0F);
                 } else {

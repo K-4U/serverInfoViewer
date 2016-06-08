@@ -17,8 +17,8 @@ public class EventHelper {
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void onGuiOpen(GuiOpenEvent evt) {
-        if(evt.gui instanceof GuiMultiplayer){
-            evt.gui = new k4unl.minecraft.siv.client.gui.GuiMultiplayer(((GuiMultiplayer)evt.gui).parentScreen);
+        if(evt.getGui() instanceof GuiMultiplayer){
+            evt.setGui(new k4unl.minecraft.siv.client.gui.GuiMultiplayer(((GuiMultiplayer)evt.getGui()).parentScreen));
         }
     }
 }
