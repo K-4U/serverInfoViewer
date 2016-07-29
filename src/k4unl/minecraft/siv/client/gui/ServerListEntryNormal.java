@@ -69,8 +69,8 @@ public class ServerListEntryNormal extends net.minecraft.client.gui.ServerListEn
                 }
             });
         }
-        boolean flag = this.server.version > 110;
-        boolean flag1 = this.server.version < 110;
+        boolean flag = this.server.version > 210;
+        boolean flag1 = this.server.version < 210;
         boolean flag2 = flag || flag1;
 
         /** CUSTOM **/
