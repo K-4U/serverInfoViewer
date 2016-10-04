@@ -35,8 +35,10 @@ public class ServerListEntryNormal extends net.minecraft.client.gui.ServerListEn
             if (!extendedServerData.isHasData()) {
                 //Do query
                 ServerAddress serveraddress = ServerAddress.fromString(ServerListEntryNormal.this.server.serverIP);
+                
                 queryGetter = new QueryGetter(serveraddress, extendedServerData);
                 Log.debug("Getting");
+                //TODO: Make something here that'll get the port from the actual query..
                 queryGetter.run();
                 Log.debug("Done with getting");
                 threadPoolExecutor.remove(this);

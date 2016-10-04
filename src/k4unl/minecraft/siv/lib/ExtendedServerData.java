@@ -6,8 +6,8 @@ package k4unl.minecraft.siv.lib;
 public class ExtendedServerData {
     private boolean hasData;
     private boolean isDay;
-    private String time;
-    private String weather;
+    private String time = "";
+    private String weather = "";
     private boolean requesting = false;
 
     public boolean isDay() {

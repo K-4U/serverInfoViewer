@@ -44,7 +44,7 @@ public class ServerInfoViewer {
             SIVConfigHandler.init(SIVConfig.INSTANCE, event.getSuggestedConfigurationFile());
         } else {
             canWork = false;
-            Log.error("SQE IS A CLIENT ONLY MOD! IT WILL NOT WORK ON SERVERS!");
+            Log.error("SIV IS A CLIENT ONLY MOD! IT WILL NOT WORK ON SERVERS!");
         }
     }
 

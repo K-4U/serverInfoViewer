@@ -1,8 +1,8 @@
 package k4unl.minecraft.siv.lib;
 
 import com.google.gson.internal.LinkedTreeMap;
-import k4unl.minecraft.k4lib.network.EnumQueryValues;
-import k4unl.minecraft.k4lib.network.Query;
+import k4unl.minecraft.k4lib.network.EnumSIPValues;
+import k4unl.minecraft.k4lib.network.SipEndPoint;
 import net.minecraft.client.multiplayer.ServerAddress;
 
 import java.io.IOException;
@@ -12,10 +12,10 @@ import java.io.IOException;
  */
 public class QueryGetter {
     private ExtendedServerData extendedServerData;
-    private Query query;
+    private SipEndPoint        sipEndPoint;
 
     public QueryGetter(ServerAddress serverAddress, ExtendedServerData extendedServerData) {
-        query = new Query(serverAddress.getIP(), serverAddress.getPort());
+        sipEndPoint = new SipEndPoint(serverAddress.getIP(), serverAddress.getPort() + 1); //We just assume that the port used is always +1. If not.. well
         this.extendedServerData = extendedServerData;
         this.extendedServerData.setHasData(false);
 
@@ -26,16 +26,16 @@ public class QueryGetter {
             if(extendedServerData.isRequesting())
                 return;
             extendedServerData.setRequesting(true);
-            query.requestExtendedInfo(EnumQueryValues.DAYNIGHT, EnumQueryValues.TIME, EnumQueryValues.WEATHER);
+            sipEndPoint.requestExtendedInfo(EnumSIPValues.DAYNIGHT, EnumSIPValues.TIME, EnumSIPValues.WEATHER);
             extendedServerData.setHasData(true);
 
-            LinkedTreeMap<String, String> time = (LinkedTreeMap<String, String>) query.getExtendedObject(EnumQueryValues.TIME);
-            LinkedTreeMap<String, String> weather = (LinkedTreeMap<String, String>) query.getExtendedObject(EnumQueryValues.WEATHER);
+            LinkedTreeMap<String, String> time = (LinkedTreeMap<String, String>) sipEndPoint.getExtendedObject(EnumSIPValues.TIME);
+            LinkedTreeMap<String, String> weather = (LinkedTreeMap<String, String>) sipEndPoint.getExtendedObject(EnumSIPValues.WEATHER);
             if(time == null) return;
             if(weather == null) return;
-            if(query.getExtendedObject(EnumQueryValues.DAYNIGHT) == null) return;
+            if(sipEndPoint.getExtendedObject(EnumSIPValues.DAYNIGHT) == null) return;
             extendedServerData.setTime(time.get("0"));
-            extendedServerData.setIsDay((Boolean) query.getExtendedObject(EnumQueryValues.DAYNIGHT));
+            extendedServerData.setIsDay((Boolean) sipEndPoint.getExtendedObject(EnumSIPValues.DAYNIGHT));
             extendedServerData.setWeather(weather.get("0"));
             extendedServerData.setRequesting(false);
         } catch (IOException e) {
