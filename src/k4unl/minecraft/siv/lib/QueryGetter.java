@@ -3,7 +3,6 @@ package k4unl.minecraft.siv.lib;
 import com.google.gson.internal.LinkedTreeMap;
 import k4unl.minecraft.k4lib.network.EnumSIPValues;
 import k4unl.minecraft.k4lib.network.SipEndPoint;
-import net.minecraft.client.multiplayer.ServerAddress;
 
 import java.io.IOException;
 
@@ -14,8 +13,8 @@ public class QueryGetter {
     private ExtendedServerData extendedServerData;
     private SipEndPoint        sipEndPoint;
 
-    public QueryGetter(ServerAddress serverAddress, ExtendedServerData extendedServerData) {
-        sipEndPoint = new SipEndPoint(serverAddress.getIP(), serverAddress.getPort() + 1); //We just assume that the port used is always +1. If not.. well
+    public QueryGetter(String host, int port, ExtendedServerData extendedServerData) {
+        sipEndPoint = new SipEndPoint(host, port); //We just assume that the port used is always +1. If not.. well
         this.extendedServerData = extendedServerData;
         this.extendedServerData.setHasData(false);
 

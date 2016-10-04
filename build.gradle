@@ -23,7 +23,7 @@ repositories {
 
 
 dependencies {
-    compile "k4unl:k4lib:1.10.2-1.0.59:deobf"
+    compile "k4unl:k4lib:1.10.2-1.0.64:deobf"
 }
 
 project.ext {

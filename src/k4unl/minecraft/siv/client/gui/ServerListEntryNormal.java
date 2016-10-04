@@ -1,6 +1,7 @@
 package k4unl.minecraft.siv.client.gui;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import k4unl.minecraft.k4lib.network.Query;
 import k4unl.minecraft.siv.client.IconSupplier;
 import k4unl.minecraft.siv.lib.ExtendedServerData;
 import k4unl.minecraft.siv.lib.Log;
@@ -14,6 +15,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import org.lwjgl.opengl.GL11;
 
+import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.List;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -27,6 +29,7 @@ public class ServerListEntryNormal extends net.minecraft.client.gui.ServerListEn
     public static final ThreadPoolExecutor threadPoolExecutor = new ScheduledThreadPoolExecutor(5, (new ThreadFactoryBuilder()).setNameFormat("Server Query Checker #%d").setDaemon(true).build());
 
     private QueryGetter queryGetter;
+    private Query query;
     public ExtendedServerData extendedServerData = new ExtendedServerData();
 
     private Runnable serverQueryRequester = new Runnable() {
@@ -35,12 +38,21 @@ public class ServerListEntryNormal extends net.minecraft.client.gui.ServerListEn
             if (!extendedServerData.isHasData()) {
                 //Do query
                 ServerAddress serveraddress = ServerAddress.fromString(ServerListEntryNormal.this.server.serverIP);
-                
-                queryGetter = new QueryGetter(serveraddress, extendedServerData);
-                Log.debug("Getting");
-                //TODO: Make something here that'll get the port from the actual query..
-                queryGetter.run();
-                Log.debug("Done with getting");
+    
+                Log.debug("Getting port");
+                query = new Query(serveraddress.getIP(), serveraddress.getPort());
+                //Fetch TCP Port from server.
+                try {
+                    query.receivePort();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if(query.getTcpPort() != 0) {
+                    Log.debug("Getting");
+                    queryGetter = new QueryGetter(serveraddress.getIP(), query.getTcpPort(), extendedServerData);
+                    queryGetter.run();
+                    Log.debug("Done with getting");
+                }
                 threadPoolExecutor.remove(this);
             }
         }
