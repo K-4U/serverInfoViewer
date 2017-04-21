@@ -89,7 +89,7 @@ public class ServerListEntryNormal extends net.minecraft.client.gui.ServerListEn
 
         /** CUSTOM **/
         if(this.extendedServerData.isHasData()){
-            int textWidth = this.mc.fontRendererObj.getStringWidth(this.extendedServerData.isDay() ? "Day":"Night");
+            int textWidth = this.mc.fontRenderer.getStringWidth(this.extendedServerData.isDay() ? "Day":"Night");
             //this.field_148300_d.fontRenderer.drawString(this.extendedServerData.isDay() ? "Day" : "Night", p_148279_2_ + listWidth - textWidth - 6, y + slotHeight - this.field_148300_d.fontRenderer.FONT_HEIGHT, 16777215);
 
             if(this.extendedServerData.isDay()) {
@@ -114,16 +114,16 @@ public class ServerListEntryNormal extends net.minecraft.client.gui.ServerListEn
         }
 
 
-        this.mc.fontRendererObj.drawString(this.server.serverName, x + 32 + 3, y + 1, 16777215);
-        List<String> list = this.mc.fontRendererObj.listFormattedStringToWidth(FMLClientHandler.instance().fixDescription(this.server.serverMOTD), listWidth - 48 - 2);
+        this.mc.fontRenderer.drawString(this.server.serverName, x + 32 + 3, y + 1, 16777215);
+        List<String> list = this.mc.fontRenderer.listFormattedStringToWidth(FMLClientHandler.instance().fixDescription(this.server.serverMOTD), listWidth - 48 - 2);
 
         for (int i = 0; i < Math.min(list.size(), 2); ++i) {
-            this.mc.fontRendererObj.drawString((String) list.get(i), x + 32 + 3, y + 12 + this.mc.fontRendererObj.FONT_HEIGHT * i, 8421504);
+            this.mc.fontRenderer.drawString((String) list.get(i), x + 32 + 3, y + 12 + this.mc.fontRenderer.FONT_HEIGHT * i, 8421504);
         }
 
         String s2 = flag2 ? TextFormatting.DARK_RED + this.server.gameVersion : this.server.populationInfo;
-        int j = this.mc.fontRendererObj.getStringWidth(s2);
-        this.mc.fontRendererObj.drawString(s2, x + listWidth - j - 15 - 2, y + 1, 8421504);
+        int j = this.mc.fontRenderer.getStringWidth(s2);
+        this.mc.fontRenderer.drawString(s2, x + listWidth - j - 15 - 2, y + 1, 8421504);
         int k = 0;
         String s = null;
         int l;

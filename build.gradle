@@ -21,17 +21,16 @@ repositories {
     }
 }
 
-
-dependencies {
-    compile "k4unl:k4lib:1.10.2-1.0.64:deobf"
-}
-
 project.ext {
     buildNum = System.getenv("BUILD_NUMBER")
-    mcVersion="1.10.2"
+    mcVersion="1.11.2"
 }
 
-version = project.ext.mcVersion + "-1.0." + project.ext.buildNum
+dependencies {
+    deobfCompile "k4unl:k4lib:${project.ext.mcVersion}-2.1.70:universal"
+}
+
+version = project.ext.mcVersion + "-2.0." + project.ext.buildNum
 group= "k4unl.minecraft.siv" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "ServerInfoViewer"
 
@@ -39,16 +38,16 @@ archivesBaseName = "ServerInfoViewer"
 
 allprojects {
     apply plugin: 'java'
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 }
 
 minecraft {
-    version = "${project.ext.mcVersion}-12.18.1.2094"
+    version = "${project.ext.mcVersion}-13.20.0.2263"
     replace "@VERSION@", project.version
     replace "@BUILDNUM@", project.ext.buildNum
 
-    mappings = "snapshot_20160930"
+    mappings = "snapshot_20170405"
 
     runDir = "../Minecraft/"
 }
