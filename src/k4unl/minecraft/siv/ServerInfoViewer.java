@@ -50,6 +50,7 @@ public class ServerInfoViewer {
 
     @Mod.EventHandler
     public void load(FMLInitializationEvent event) {
+        Log.debug("Initializing event helper");
         EventHelper.init();
     }
 

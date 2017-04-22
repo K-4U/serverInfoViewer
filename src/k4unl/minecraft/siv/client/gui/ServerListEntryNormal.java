@@ -35,6 +35,7 @@ public class ServerListEntryNormal extends net.minecraft.client.gui.ServerListEn
     private Runnable serverQueryRequester = new Runnable() {
         @Override
         public void run() {
+            Log.debug("");
             if (!extendedServerData.isHasData()) {
                 //Do query
                 ServerAddress serveraddress = ServerAddress.fromString(ServerListEntryNormal.this.server.serverIP);
