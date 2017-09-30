@@ -62,8 +62,8 @@ public class ServerListEntryNormal extends net.minecraft.client.gui.ServerListEn
     protected ServerListEntryNormal(net.minecraft.client.gui.GuiMultiplayer p_i45048_1_, ServerData p_i45048_2_) {
         super(p_i45048_1_, p_i45048_2_);
     }
-
-    public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected) {
+    
+    public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float partialTicks) {
         if (!this.server.pinged) {
             this.server.pinged = true;
             this.server.pingToServer = -2L;
@@ -84,14 +84,14 @@ public class ServerListEntryNormal extends net.minecraft.client.gui.ServerListEn
                 }
             });
         }
-        boolean flag = this.server.version > 316;
-        boolean flag1 = this.server.version < 316;
+        boolean flag = this.server.version > 338;
+        boolean flag1 = this.server.version < 338;
         boolean flag2 = flag || flag1;
 
         /** CUSTOM **/
         if(this.extendedServerData.isHasData()){
             int textWidth = this.mc.fontRenderer.getStringWidth(this.extendedServerData.isDay() ? "Day":"Night");
-            //this.field_148300_d.fontRenderer.drawString(this.extendedServerData.isDay() ? "Day" : "Night", p_148279_2_ + listWidth - textWidth - 6, y + slotHeight - this.field_148300_d.fontRenderer.FONT_HEIGHT, 16777215);
+            //this.mc.fontRenderer.drawString(this.extendedServerData.isDay() ? "Day" : "Night", x + listWidth - textWidth - 6, y + slotHeight - this.mc.fontRenderer.FONT_HEIGHT, 16777215);
 
             if(this.extendedServerData.isDay()) {
                 this.mc.getTextureManager().bindTexture(IconSupplier.sun);
